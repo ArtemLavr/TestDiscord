@@ -2,6 +2,17 @@ import discord
 from discord.ext import commands
 import json
 
+"""
+TASKS:
+
+1. Events - tracking user connection to the channel ([user_name] connected to the channel / [user_name] left channel).
+2. Commands - create a .help command to display the bot's greeting text.
+3. Kick / Ban / Unban - add the kick feature using the .kick [user_name], ban .ban [user_name] and unban commands, respectively .unban [user_name]
+4. Level system - create a level system for users (upgrade the user level every 20 messages).
+"""
+
+
+
 intents = discord.Intents.default()
 intents.members = True
 
@@ -12,9 +23,15 @@ async def on_ready():
     print(f'Logged in as {client.user} (ID: {client.user.id})')
 
     print('------')
+
+
+
+#  TASK # 1
+
 @client.event
 async def on_member_join(member):
-    print(f'{member.name} connected to the channel')
+    channels = member.guild.text_channels
+    await channels[0].send(f'{member.name} connected to the channel')
 
     with open('users.json') as f:
         users = json.load(f)
@@ -29,12 +46,15 @@ async def on_member_remove(member):
     print(f'{member.name} left channel')
 
 
-
+# TASK #2
 
 @client.command()
 async def help(context):
     await context.send("Welcom to test bot!")
 
+
+
+# TASK #3
 
 @client.command()
 async def ban( ctx, member: discord.Member, *, reason=None):
@@ -58,12 +78,15 @@ async def unban( ctx, member):
             await ctx.send(f'User {member} has been unbuned')
             return
     
-       
+
 @client.command()
 async def kick(ctx, member: discord.Member, *, reason=None):
         await member.kick(reason=reason)
         await ctx.send(f'User {member} has been kick')
 
+
+
+# TASK #4
 
 @client.event
 async def on_message(message):
@@ -86,7 +109,7 @@ async def update_data(users, user):
     if not f'{user.id}' in users:
         users[f'{user.id}'] = {}
         users[f'{user.id}']['experience'] = 0
-        users[f'{user.id}']['level'] = 1
+        users[f'{user.id}']['level'] = 0
 
 
 async def add_experience(users, user, exp):
@@ -117,4 +140,4 @@ async def level(ctx, member: discord.Member = None):
         await ctx.send(f'{member} is at level {lvl}!')
 
 
-client.run('ODk0NjY2NzM1NTkwOTY5Mzc0.YVtVUw.0rBVi6t4v8jaF2zGeGevnUrwAlY')
+client.run('ODk0NjY2NzM1NTkwOTY5Mzc0.YVtVUw.UeKIoYrdmywWz7zEGtPRAQ6FyR4')
